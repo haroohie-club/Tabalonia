@@ -534,6 +534,11 @@ public class TabsControl : TabControl
         if (ItemsSource is not IList itemsList)
             return;
 
+        if (SelectedIndex > tabItem.LogicalIndex)
+        {
+            SetSelectedNewTab(itemsList, tabItem.LogicalIndex);
+        }
+
         for (int i = itemsList.Count - 1; i >= FixedHeaderCount && i > tabItem.LogicalIndex; i--)
         {
             itemsList.RemoveAt(i);
