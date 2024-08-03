@@ -512,7 +512,7 @@ public class TabsControl : TabControl
         if (ItemsSource is not IList itemsList)
             return;
 
-        int removeIndex = itemsList.Count - 1;
+        int removeIndex = itemsList.Count - (tabItem.LogicalIndex == itemsList.Count - 1 ? 2 : 1);
         while (itemsList.Count > FixedHeaderCount + (tabItem.LogicalIndex > FixedHeaderCount ? 1 : 0))
         {
             itemsList.RemoveAt(removeIndex--);
