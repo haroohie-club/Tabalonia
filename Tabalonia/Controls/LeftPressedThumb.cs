@@ -15,6 +15,9 @@ public class LeftPressedThumb : TemplatedControl
     public static readonly RoutedEvent<VectorEventArgs> DragCompletedEvent =
         RoutedEvent.Register<Thumb, VectorEventArgs>(nameof(DragCompleted), RoutingStrategies.Bubble);
 
+    public static readonly RoutedEvent<VectorEventArgs> MiddleClickedEvent =
+        RoutedEvent.Register<Thumb, VectorEventArgs>(nameof(MiddleClicked), RoutingStrategies.Bubble);
+
     
     private Point? _lastPoint;
     
@@ -35,6 +38,12 @@ public class LeftPressedThumb : TemplatedControl
     {
         add => AddHandler(DragCompletedEvent, value);
         remove => RemoveHandler(DragCompletedEvent, value);
+    }
+
+    public event EventHandler<VectorEventArgs>? MiddleClicked
+    {
+        add => AddHandler(MiddleClickedEvent, value);
+        remove => RemoveHandler(MiddleClickedEvent, value);
     }
 
 
@@ -78,6 +87,22 @@ public class LeftPressedThumb : TemplatedControl
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        if (IsMiddleButtonPressed(e))
+        {
+            e.Handled = true;
+            _lastPoint = e.GetPosition(this);
+
+            var mev = new VectorEventArgs
+            {
+                RoutedEvent = MiddleClickedEvent,
+                Vector = (Vector)_lastPoint,
+            };
+
+            e.PreventGestureRecognition();
+
+            RaiseEvent(mev);
+            return;
+        }
         if (!IsLeftButtonPressed(e))
             return;
         
@@ -123,7 +148,13 @@ public class LeftPressedThumb : TemplatedControl
         
         return point.Properties.IsLeftButtonPressed;
     }
-    
+
+    private bool IsMiddleButtonPressed(PointerEventArgs args)
+    {
+        var point = args.GetCurrentPoint(this);
+
+        return point.Properties.IsMiddleButtonPressed;
+    }
     
     private class LeftPressedThumbPeer : ControlAutomationPeer
     {

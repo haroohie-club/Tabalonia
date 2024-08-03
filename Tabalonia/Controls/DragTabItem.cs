@@ -86,7 +86,7 @@ public class DragTabItem : TabItem
 
     public static readonly RoutedEvent<DragTabDragDeltaEventArgs> PreviewDragDelta =
         RoutedEvent.Register<DragTabItem, DragTabDragDeltaEventArgs>("PreviewDragDelta", RoutingStrategies.Tunnel);
-    
+
     #endregion
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -101,7 +101,6 @@ public class DragTabItem : TabItem
         _thumb.DragCompleted += ThumbOnDragCompleted;
     }
 
-    
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);
@@ -166,7 +165,6 @@ public class DragTabItem : TabItem
             //    thumb.CancelDrag();
         }
     }
-
     
     private void ThumbOnDragCompleted(object? sender, VectorEventArgs e)
     {

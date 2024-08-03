@@ -1,7 +1,9 @@
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:converters="clr-namespace:Tabalonia.Converters"
-        xmlns:local="clr-namespace:Tabalonia.Controls">
+        xmlns:local="clr-namespace:Tabalonia.Controls"
+        xmlns:i="using:Avalonia.Xaml.Interactivity"
+        xmlns:ia="using:Avalonia.Xaml.Interactions.Core">
 
     <Design.PreviewWith>
         <Border Padding="20">
@@ -132,7 +134,30 @@
 
 
                             <local:LeftPressedThumb Name="PART_Thumb"
-                                                    Classes="DragTabItemThumbStyle" />
+                                                    Classes="DragTabItemThumbStyle">
+                                <i:Interaction.Behaviors>
+                                    <ia:EventTriggerBehavior EventName="MiddleClicked" SourceObject="{Binding #PART_Thumb}">
+                                        <ia:InvokeCommandAction Command="{Binding $parent[local:TabsControl].CloseItemCommand}"
+                                                                CommandParameter="{Binding RelativeSource={RelativeSource TemplatedParent}}"/>
+                                    </ia:EventTriggerBehavior>
+                                </i:Interaction.Behaviors>
+                                <local:LeftPressedThumb.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Close Item"
+                                                  Command="{Binding $parent[local:TabsControl].CloseItemCommand}"
+                                                  CommandParameter="{Binding $parent[local:DragTabItem]}"/>
+                                        <MenuItem Header="Close All But This"
+                                                  Command="{Binding $parent[local:TabsControl].CloseAllButThisCommand}"
+                                                  CommandParameter="{Binding $parent[local:DragTabItem]}"/>
+                                        <MenuItem Header="Close All to Right"
+                                                  Command="{Binding $parent[local:TabsControl].CloseAllToRightCommand}"
+                                                  CommandParameter="{Binding $parent[local:DragTabItem]}"/>
+                                        <MenuItem Header="Close All"
+                                                  Command="{Binding $parent[local:TabsControl].CloseAllCommand}"
+                                                  CommandParameter="{Binding $parent[local:DragTabItem]}"/>
+                                    </ContextMenu>
+                                </local:LeftPressedThumb.ContextMenu>
+                            </local:LeftPressedThumb>
 
                             <Button Margin="{TemplateBinding Padding}"
                                     HorizontalAlignment="Right"
