@@ -1,4 +1,5 @@
 using System.Collections;
+using System.ComponentModel;
 using System.Windows.Input;
 using Tabalonia.Events;
 using Tabalonia.Panels;
@@ -513,7 +514,7 @@ public class TabsControl : TabControl
             return;
 
         int removeIndex = itemsList.Count - (tabItem.LogicalIndex == itemsList.Count - 1 ? 2 : 1);
-        while (itemsList.Count > FixedHeaderCount + (tabItem.LogicalIndex > FixedHeaderCount ? 1 : 0))
+        while (removeIndex >= FixedHeaderCount && itemsList.Count > FixedHeaderCount + (tabItem.LogicalIndex > FixedHeaderCount ? 1 : 0))
         {
             itemsList.RemoveAt(removeIndex--);
             if (tabItem.LogicalIndex == removeIndex)
