@@ -7,7 +7,7 @@
         <LangVersion>preview</LangVersion>
         <IsAotCompatible>true</IsAotCompatible>
 
-        <Version>0.10.4.1</Version>
+        <Version>0.10.4.2</Version>
 
         <Copyright>Copyright 2022-$([System.DateTime]::Now.ToString(`yyyy`)) © The Tabalonia Project</Copyright>
         <PackageProjectUrl>https://github.com/egorozh/Tabalonia</PackageProjectUrl>
