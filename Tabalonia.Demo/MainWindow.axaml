@@ -17,7 +17,12 @@
                           FixedHeaderCount="1"
                           ShowDefaultAddButton="True"
                           ShowDefaultCloseButton="True"
-                          Margin="0 8 0 0">
+                          Margin="0 8 0 0"
+                          CloseItemHeaderText="Close Item"
+                          CloseAllHeaderText="Close All"
+                          CloseAllButThisHeaderText="Close All Other Tabs"
+                          CloseAllToRightHeaderText="Close All to Right"
+                          CloseAllToLeftHeaderText="Close All to Left">
         <TabControl.ContentTemplate>
             <DataTemplate DataType="dragablzDemo:TabItemViewModel">
 

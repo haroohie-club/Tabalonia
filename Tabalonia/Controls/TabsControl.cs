@@ -33,6 +33,7 @@ public class TabsControl : TabControl
     private ICommand _closeItemCommand;
     private ICommand _closeAllButThisCommand;
     private ICommand _closeAllToRightCommand;
+    private ICommand _closeAllToLeftCommand;
     private ICommand _closeAllCommand;
 
     #endregion
@@ -118,6 +119,18 @@ public class TabsControl : TabControl
             o => o.CloseAllCommand,
             (o, v) => o.CloseAllCommand = v);
 
+
+    public static readonly StyledProperty<string> CloseItemHeaderTextProperty =
+        AvaloniaProperty.Register<DragTabItem, string>(nameof(CloseItemHeaderText));
+    public static readonly StyledProperty<string> CloseAllButThisHeaderTextProperty =
+        AvaloniaProperty.Register<DragTabItem, string>(nameof(CloseAllButThisHeaderText));
+    public static readonly StyledProperty<string> CloseAllToRightHeaderTextProperty =
+        AvaloniaProperty.Register<DragTabItem, string>(nameof(CloseAllToRightHeaderText));
+    public static readonly StyledProperty<string> CloseAllToLeftHeaderTextProperty =
+        AvaloniaProperty.Register<DragTabItem, string>(nameof(CloseAllToLeftHeaderText));
+    public static readonly StyledProperty<string> CloseAllHeaderTextProperty =
+        AvaloniaProperty.Register<DragTabItem, string>(nameof(CloseAllHeaderText));
+
     #endregion
 
 
@@ -145,6 +158,7 @@ public class TabsControl : TabControl
         _closeItemCommand = new SimpleParamActionCommand(CloseItem);
         _closeAllButThisCommand = new SimpleParamActionCommand(CloseAllButThis);
         _closeAllToRightCommand = new SimpleParamActionCommand(CloseAllToRight);
+        _closeAllToLeftCommand = new SimpleParamActionCommand(CloseAllToLeft);
         _closeAllCommand = new SimpleParamActionCommand(CloseAll);
     }
 
@@ -254,10 +268,43 @@ public class TabsControl : TabControl
     }
 
 
+    public ICommand CloseAllToLeftCommand
+    {
+        get => _closeAllToRightCommand;
+        private set => SetAndRaise(CloseAllToRightCommandProperty, ref _closeAllToRightCommand, value);
+    }
+
+
     public ICommand CloseAllCommand
     {
         get => _closeAllCommand;
         private set => SetAndRaise(CloseAllCommandProperty, ref _closeAllCommand, value);
+    }
+    
+    public string CloseItemHeaderText
+    {
+        get => GetValue(CloseItemHeaderTextProperty);
+        set => SetValue(CloseItemHeaderTextProperty, value);
+    }
+    public string CloseAllButThisHeaderText
+    {
+        get => GetValue(CloseAllButThisHeaderTextProperty);
+        set => SetValue(CloseAllButThisHeaderTextProperty, value);
+    }
+    public string CloseAllToRightHeaderText
+    {
+        get => GetValue(CloseAllToRightHeaderTextProperty);
+        set => SetValue(CloseAllToRightHeaderTextProperty, value);
+    }
+    public string CloseAllToLeftHeaderText
+    {
+        get => GetValue(CloseAllToLeftHeaderTextProperty);
+        set => SetValue(CloseAllToLeftHeaderTextProperty, value);
+    }
+    public string CloseAllHeaderText
+    {
+        get => GetValue(CloseAllHeaderTextProperty);
+        set => SetValue(CloseAllHeaderTextProperty, value);
     }
 
     #endregion
@@ -505,6 +552,18 @@ public class TabsControl : TabControl
         }
     }
 
+    private void SwapTabs(DragTabItem tab1, DragTabItem tab2)
+    {
+        if (ItemsSource is not IList itemsList)
+            return;
+
+        (tab1.LogicalIndex, tab2.LogicalIndex) = (tab2.LogicalIndex, tab1.LogicalIndex);
+        itemsList.Remove(tab1.DataContext);
+        itemsList.Remove(tab2.DataContext);
+        itemsList.Insert(tab1.LogicalIndex, tab1.DataContext);
+        itemsList.Insert(tab2.LogicalIndex, tab2.DataContext);
+    }
+
     private void CloseAllButThis(object? tabItemSource)
     {
         ArgumentNullException.ThrowIfNull(tabItemSource);
@@ -514,19 +573,25 @@ public class TabsControl : TabControl
 
         if (ItemsSource is not IList itemsList)
             return;
-
-        int removeIndex = itemsList.Count - (tabItem.LogicalIndex == itemsList.Count - 1 ? 2 : 1);
-        while (removeIndex >= FixedHeaderCount && itemsList.Count > FixedHeaderCount + (tabItem.LogicalIndex > FixedHeaderCount ? 1 : 0))
-        {
-            itemsList.RemoveAt(removeIndex--);
-            if (tabItem.LogicalIndex == removeIndex)
-            {
-                removeIndex--;
-            }
-        }
+        
+        SwapTabs(tabItem, DragTabItems().ElementAt(FixedHeaderCount));
+        CloseAllToRight(tabItemSource);
     }
 
     private void CloseAllToRight(object? tabItemSource)
+    {
+        ArgumentNullException.ThrowIfNull(tabItemSource);
+
+        if (tabItemSource is not DragTabItem tabItem)
+            return;
+
+        if (ItemsSource is not IList itemsList)
+            return;
+
+        for (int i = FixedHeaderCount; itemsList[i] != tabItem.DataContext; itemsList.RemoveAt(i)) ;
+    }
+
+    private void CloseAllToLeft(object? tabItemSource)
     {
         ArgumentNullException.ThrowIfNull(tabItemSource);
 
@@ -556,6 +621,11 @@ public class TabsControl : TabControl
 
         if (ItemsSource is not IList itemsList)
             return;
+        
+        if (FixedHeaderCount == 0)
+        {
+            itemsList.Clear();
+        }
 
         for (int i = itemsList.Count - 1; i >= FixedHeaderCount; i--)
         {

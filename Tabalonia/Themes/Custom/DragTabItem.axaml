@@ -143,16 +143,19 @@
                                 </i:Interaction.Behaviors>
                                 <local:LeftPressedThumb.ContextMenu>
                                     <ContextMenu>
-                                        <MenuItem Header="Close Item"
+                                        <MenuItem Header="{Binding $parent[local:TabsControl].CloseItemHeaderText}"
                                                   Command="{Binding $parent[local:TabsControl].CloseItemCommand}"
                                                   CommandParameter="{Binding $parent[local:DragTabItem]}"/>
-                                        <MenuItem Header="Close All But This"
+                                        <MenuItem Header="{Binding $parent[local:TabsControl].CloseAllButThisHeaderText}"
                                                   Command="{Binding $parent[local:TabsControl].CloseAllButThisCommand}"
                                                   CommandParameter="{Binding $parent[local:DragTabItem]}"/>
-                                        <MenuItem Header="Close All to Right"
+                                        <MenuItem Header="{Binding $parent[local:TabsControl].CloseAllToRightHeaderText}"
                                                   Command="{Binding $parent[local:TabsControl].CloseAllToRightCommand}"
                                                   CommandParameter="{Binding $parent[local:DragTabItem]}"/>
-                                        <MenuItem Header="Close All"
+                                        <MenuItem Header="{Binding $parent[local:TabsControl].CloseAllToLeftHeaderText}"
+                                                  Command="{Binding $parent[local:TabsControl].CloseAllToLeftCommand}"
+                                                  CommandParameter="{Binding $parent[local:DragTabItem]}"/>
+                                        <MenuItem Header="{Binding $parent[local:TabsControl].CloseAllHeaderText}"
                                                   Command="{Binding $parent[local:TabsControl].CloseAllCommand}"
                                                   CommandParameter="{Binding $parent[local:DragTabItem]}"/>
                                     </ContextMenu>

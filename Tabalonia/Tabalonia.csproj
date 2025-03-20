@@ -7,7 +7,7 @@
         <LangVersion>preview</LangVersion>
         <IsAotCompatible>true</IsAotCompatible>
 
-        <Version>0.10.4.3</Version>
+        <Version>0.10.5</Version>
 
         <Copyright>Copyright 2022-$([System.DateTime]::Now.ToString(`yyyy`)) © The Tabalonia Project</Copyright>
         <PackageProjectUrl>https://github.com/egorozh/Tabalonia</PackageProjectUrl>
@@ -22,8 +22,8 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.0" />
-        <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.2.0" />
+        <PackageReference Include="Avalonia" Version="11.2.5" />
+        <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.2.0.14" />
     </ItemGroup>
 
     <ItemGroup Label="PackageIcon">
