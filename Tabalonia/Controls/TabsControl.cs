@@ -111,6 +111,12 @@ public class TabsControl : TabControl
             nameof(CloseAllToRightCommand),
             o => o.CloseAllToRightCommand,
             (o, v) => o.CloseAllToRightCommand = v);
+    
+    public static readonly DirectProperty<TabsControl, ICommand> CloseAllToLeftCommandProperty =
+        AvaloniaProperty.RegisterDirect<TabsControl, ICommand>(
+            nameof(CloseAllToLeftCommand),
+            o => o.CloseAllToLeftCommand,
+            (o, v) => o.CloseAllToLeftCommand = v);
 
 
     public static readonly DirectProperty<TabsControl, ICommand> CloseAllCommandProperty =
@@ -270,8 +276,8 @@ public class TabsControl : TabControl
 
     public ICommand CloseAllToLeftCommand
     {
-        get => _closeAllToRightCommand;
-        private set => SetAndRaise(CloseAllToRightCommandProperty, ref _closeAllToRightCommand, value);
+        get => _closeAllToLeftCommand;
+        private set => SetAndRaise(CloseAllToLeftCommandProperty, ref _closeAllToLeftCommand, value);
     }
 
 
@@ -574,24 +580,11 @@ public class TabsControl : TabControl
         if (ItemsSource is not IList itemsList)
             return;
         
-        SwapTabs(tabItem, DragTabItems().ElementAt(FixedHeaderCount));
         CloseAllToRight(tabItemSource);
+        CloseAllToLeft(tabItemSource);
     }
 
     private void CloseAllToRight(object? tabItemSource)
-    {
-        ArgumentNullException.ThrowIfNull(tabItemSource);
-
-        if (tabItemSource is not DragTabItem tabItem)
-            return;
-
-        if (ItemsSource is not IList itemsList)
-            return;
-
-        for (int i = FixedHeaderCount; itemsList[i] != tabItem.DataContext; itemsList.RemoveAt(i)) ;
-    }
-
-    private void CloseAllToLeft(object? tabItemSource)
     {
         ArgumentNullException.ThrowIfNull(tabItemSource);
 
@@ -609,6 +602,29 @@ public class TabsControl : TabControl
         for (int i = itemsList.Count - 1; i >= FixedHeaderCount && i > tabItem.LogicalIndex; i--)
         {
             itemsList.RemoveAt(i);
+        }
+    }
+
+    private void CloseAllToLeft(object? tabItemSource)
+    {
+        ArgumentNullException.ThrowIfNull(tabItemSource);
+
+        if (tabItemSource is not DragTabItem tabItem)
+            return;
+
+        if (ItemsSource is not IList itemsList)
+            return;
+
+        int numClosed = 0;
+        for (int i = FixedHeaderCount; itemsList[i] != tabItem.DataContext; itemsList.RemoveAt(i))
+        {
+            numClosed++;
+        }
+
+        DragTabItem[] dragTabItems = DragTabItems().ToArray();
+        for (int i = FixedHeaderCount; i < dragTabItems.Length; i++)
+        {
+            dragTabItems[i].LogicalIndex -= numClosed;
         }
     }
 
